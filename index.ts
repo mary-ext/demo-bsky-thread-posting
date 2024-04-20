@@ -99,7 +99,7 @@ for (let idx = 0, len = posts.length; idx < len; idx++) {
     ...post,
   };
 
-  // dag-cbor/cborg DOES not like undefined values.
+  // dag-cbor/cborg DOES NOT like undefined values.
   if (reply) {
     record.reply = reply;
   }
