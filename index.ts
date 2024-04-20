@@ -18,6 +18,8 @@ import * as dcbor from "@ipld/dag-cbor";
 import { CID } from "multiformats/cid";
 import * as Hasher from "multiformats/hashes/hasher";
 
+import { prepareObject } from "./utils";
+
 const mf_sha256 = Hasher.from({
   name: "sha2-256",
   code: 0x12,
@@ -65,9 +67,7 @@ const posts: Post[] = [
       $type: "app.bsky.embed.images",
       images: [
         {
-          // IMPORTANT: `ipld` returns the correct object that we want to use for
-          // hashing, ignore the type error.
-          image: blob.ipld() as any,
+          image: blob,
           alt: "",
         },
       ],
@@ -97,22 +97,23 @@ for (let idx = 0, len = posts.length; idx < len; idx++) {
     $type: "app.bsky.feed.post",
     createdAt: now.toISOString(),
     ...post,
+    reply: reply,
   };
 
-  // dag-cbor/cborg DOES NOT like undefined values.
-  if (reply) {
-    record.reply = reply;
-  }
+  // IMPORTANT: `prepareObject` prepares the record to be hashed by removing
+  // fields with undefined value, and converting BlobRef instances to the right
+  // IPLD representation.
+  const prepared = prepareObject(record) as AppBskyFeedPost.Record;
 
   writes.push({
     collection: "app.bsky.feed.post",
     rkey: rkey,
-    value: record,
+    value: prepared,
   });
 
   // Retrieve the next reply ref
   if (idx !== len - 1) {
-    const encoded = dcbor.encode(record);
+    const encoded = dcbor.encode(prepared);
 
     const digest = await mf_sha256.digest(encoded);
     const cid = CID.createV1(0x71, digest);
