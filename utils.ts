@@ -36,7 +36,6 @@ export const prepareObject = (v: any): any => {
   if (isPlainObject(v)) {
     const obj: any = {};
 
-    
     let pure = true;
 
     for (const key in v) {
