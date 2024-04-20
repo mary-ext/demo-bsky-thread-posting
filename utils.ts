@@ -17,6 +17,21 @@ export const prepareObject = (v: any): any => {
     return v.ipld();
   }
 
+  // Walk through arrays
+  if (Array.isArray(v)) {
+    let pure = true;
+
+    const mapped = v.map((value) => {
+      if (value !== (value = prepareObject(value))) {
+        pure = false;
+      }
+
+      return value;
+    });
+
+    return pure ? v : mapped;
+  }
+
   // Return as-is for anything that doesn't look like a plain object
   if (!isPlainObject(v)) {
     return v;
