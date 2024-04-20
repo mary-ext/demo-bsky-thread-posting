@@ -6,7 +6,7 @@ export const isPlainObject = (v: any): boolean => {
   }
 
   const proto = Object.getPrototypeOf(v);
-  return proto === Object || proto === null;
+  return proto === Object.prototype || proto === null;
 };
 
 export const prepareObject = (v: any): any => {
