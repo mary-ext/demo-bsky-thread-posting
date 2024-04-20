@@ -32,36 +32,33 @@ export const prepareObject = (v: any): any => {
     return pure ? v : mapped;
   }
 
-  // Return as-is for anything that doesn't look like a plain object
-  if (!isPlainObject(v)) {
-    return v;
-  }
+  // Walk through plain objects
+  if (isPlainObject(v)) {
+    const obj: any = {};
 
-  const obj: any = {};
+    
+    let pure = true;
 
-  let pure = true;
+    for (const key in v) {
+      let value = v[key];
 
-  for (const key in v) {
-    let value = v[key];
+      // `value` is undefined
+      if (value === undefined) {
+        pure = false;
+        continue;
+      }
 
-    // `value` is undefined
-    if (value === undefined) {
-      pure = false;
-      continue;
+      // `prepareObject` returned a value that's different from what we had before
+      if (value !== (value = prepareObject(value))) {
+        pure = false;
+      }
+
+      obj[key] = value;
     }
 
-    // `prepareObject` returned a value that's different from what we had before
-    if (value !== (value = prepareObject(value))) {
-      pure = false;
-    }
-
-    obj[key] = value;
+    // Return as is if we haven't needed to tamper with anything
+    return pure ? v : obj;
   }
 
-  // Return as-is if the object is pure
-  if (pure) {
-    return v;
-  }
-
-  return obj;
+  return v;
 };
