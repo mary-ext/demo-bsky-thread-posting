@@ -113,7 +113,7 @@ for (let idx = 0, len = posts.length; idx < len; idx++) {
     // IMPORTANT: `prepareObject` prepares the record to be hashed by removing
     // fields with undefined value, and converting BlobRef instances to the
     // right IPLD representation.
-    const prepared = prepareObject(record) as AppBskyFeedPost.Record;
+    const prepared = prepareObject(record);
 
     // 1. Encode the record into DAG-CBOR format
     const encoded = dcbor.encode(prepared);
