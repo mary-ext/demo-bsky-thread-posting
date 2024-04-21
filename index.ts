@@ -102,19 +102,19 @@ for (let idx = 0, len = posts.length; idx < len; idx++) {
     reply: reply,
   };
 
-  // IMPORTANT: `prepareObject` prepares the record to be hashed by removing
-  // fields with undefined value, and converting BlobRef instances to the right
-  // IPLD representation.
-  const prepared = prepareObject(record) as AppBskyFeedPost.Record;
-
   writes.push({
     collection: "app.bsky.feed.post",
     rkey: rkey,
-    value: prepared,
+    value: record,
   });
 
   // Retrieve the next reply ref
   if (idx !== len - 1) {
+    // IMPORTANT: `prepareObject` prepares the record to be hashed by removing
+    // fields with undefined value, and converting BlobRef instances to the
+    // right IPLD representation.
+    const prepared = prepareObject(record) as AppBskyFeedPost.Record;
+
     // 1. Encode the record into DAG-CBOR format
     const encoded = dcbor.encode(prepared);
 
