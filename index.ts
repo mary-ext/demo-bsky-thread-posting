@@ -20,6 +20,8 @@ import * as Hasher from "multiformats/hashes/hasher";
 
 import { prepareObject } from "./utils";
 
+// The built-in hashing functions from multiformats (`multiformats/hashes/sha2`)
+// are meant for Node.js, this is the Web Crypto API equivalent.
 const mf_sha256 = Hasher.from({
   name: "sha2-256",
   code: 0x12,
