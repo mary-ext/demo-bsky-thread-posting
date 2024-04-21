@@ -115,13 +115,20 @@ for (let idx = 0, len = posts.length; idx < len; idx++) {
 
   // Retrieve the next reply ref
   if (idx !== len - 1) {
+    // 1. Encode the record into DAG-CBOR format
     const encoded = dcbor.encode(prepared);
 
+    // 2. Hash the record in SHA-256 (code 0x12)
     const digest = await mf_sha256.digest(encoded);
+
+    // 3. Create a CIDv1, specifying DAG-CBOR as content (0x71)
     const cid = CID.createV1(0x71, digest);
 
+    // 4. Return a Base32 representation of the CID (`b` prefix)
+    const b32 = cid.toString();
+
     const ref: ComAtprotoRepoStrongRef.Main = {
-      cid: cid.toString(),
+      cid: b32,
       uri: `at://${did}/app.bsky.feed.post/${rkey}`,
     };
 
