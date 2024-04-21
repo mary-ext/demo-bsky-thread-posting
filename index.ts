@@ -121,10 +121,10 @@ for (let idx = 0, len = posts.length; idx < len; idx++) {
     // 2. Hash the record in SHA-256 (code 0x12)
     const digest = await mf_sha256.digest(encoded);
 
-    // 3. Create a CIDv1, specifying DAG-CBOR as content (0x71)
+    // 3. Create a CIDv1, specifying DAG-CBOR as content (code 0x71)
     const cid = CID.createV1(0x71, digest);
 
-    // 4. Return a Base32 representation of the CID (`b` prefix)
+    // 4. Get the Base32 representation of the CID (`b` prefix)
     const b32 = cid.toString();
 
     const ref: ComAtprotoRepoStrongRef.Main = {
